@@ -1,0 +1,35 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: example-rest-service-treatment
+  labels:
+    name: example-rest-service-treatment
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      name: example-rest-service-treatment
+  template:
+    metadata:
+      labels:
+        name: example-rest-service-treatment
+        service: example-rest-service
+    spec:
+      containers:
+      - name: example-rest-service-treatment
+        image: silasbw/example-rest-service:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: "/healthcheck"
+            port: 8080
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+        readinessProbe:
+          httpGet:
+            path: "/healthcheck"
+            port: 8080
+          initialDelaySeconds: 15
+          timeoutSeconds: 1

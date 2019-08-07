@@ -1,0 +1,18 @@
+apiVersion: 'kubernetes-client.io/v1'
+kind: GatedDeployment
+metadata:
+  name: example-rest-service
+deploymentDescriptor:
+  control:
+    name: example-rest-service-control
+  treatment:
+    name: example-rest-service-treatment
+  decisionPlugins:
+    - name: newRelicPerformance
+      accountId: 807783
+      secretName: newrelic-secrets
+      secretKey: example-rest-service
+      appName: example-rest-service
+      minSamples: 50
+      maxTime: 600
+      testPath: /shopper/products

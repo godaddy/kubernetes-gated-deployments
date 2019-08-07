@@ -1,0 +1,6 @@
+coverage
+.env
+node_modules
+architecture.svg
+gated-deployment-path.svg
+Dockerfile

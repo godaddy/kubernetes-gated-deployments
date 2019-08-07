@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kubernetes-gated-deployments
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubernetes-gated-deployments-cluster-role-binding
+subjects:
+- kind: ServiceAccount
+  name: kubernetes-gated-deployments-service-account
+  namespace: kubernetes-gated-deployments
+roleRef:
+  kind: ClusterRole
+  name: kubernetes-gated-deployments-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: kubernetes-gated-deployments-read-secrets-role-binding
+  namespace: kubernetes-gated-deployments
+subjects:
+- kind: ServiceAccount
+  name: kubernetes-gated-deployments-service-account
+  namespace: kubernetes-gated-deployments
+roleRef:
+  kind: Role
+  name: kubernetes-gated-deployments-read-secrets-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kubernetes-gated-deployments-cluster-role
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "patch", "watch"]
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  verbs: ["create"]
+- apiGroups: ["apiextensions.k8s.io"]
+  resources: ["customresourcedefinitions"]
+  resourceNames: ["gateddeployments.kubernetes-client.io"]
+  verbs: ["get", "update"]
+- apiGroups: ["kubernetes-client.io"]
+  resources: ["gateddeployments"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: kubernetes-gated-deployments-read-secrets-role
+  namespace: kubernetes-gated-deployments
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kubernetes-gated-deployments-service-account
+  namespace: kubernetes-gated-deployments
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: kubernetes-gated-deployments
+  name: kubernetes-gated-deployments
+  namespace: kubernetes-gated-deployments
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: kubernetes-gated-deployments
+  template:
+    metadata:
+      labels:
+        name: kubernetes-gated-deployments
+        service: kubernetes-gated-deployments
+    spec:
+      serviceAccountName: kubernetes-gated-deployments-service-account
+      containers:
+        - image: "godaddy/kubernetes-gated-deployments:1.0.0"
+          imagePullPolicy: Always
+          name: kubernetes-gated-deployments
