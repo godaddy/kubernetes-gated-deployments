@@ -10,7 +10,7 @@ docker tag godaddy/kubernetes-gated-deployments:$SHA godaddy/kubernetes-gated-de
 
 perl -i -pe "s/tag: [a-zA-Z0-9\.]*/tag: $TAG/" helm/kubernetes-gated-deployments/values.yaml
 perl -i -pe "s/appVersion: [a-zA-Z0-9\.]*/appVersion: $TAG/" helm/kubernetes-gated-deployments/Chart.yaml
-git commit helm/kubernetes-gated-deployments/values.yaml helm/kubernetes-gated-deployments/Chart.yml -m "chore(release): godaddy/kubernetes-gated-deployments:$TAG"
+git commit helm/kubernetes-gated-deployments/values.yaml helm/kubernetes-gated-deployments/Chart.yaml -m "chore(release): godaddy/kubernetes-gated-deployments:$TAG"
 
 echo ""
 echo "Run the following to publish:"
