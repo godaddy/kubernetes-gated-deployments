@@ -1,6 +1,6 @@
 {
   "name": "kubernetes-gated-deployments",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Gate Kubernetes deployments with AB tests",
   "main": "bin/daemon.js",
   "scripts": {
